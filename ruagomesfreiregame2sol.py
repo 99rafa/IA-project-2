@@ -1,4 +1,5 @@
 import random
+import math
 
 # LearningAgent to implement
 # no knowledeg about the environment can be used
@@ -13,6 +14,16 @@ class LearningAgent:
                 # define this function
                 self.nS = nS
                 self.nA = nA
+                self.gama = 0.9
+                self.alfa = 0.6
+                self.eps =  0.1
+                self.memory = []
+                for i in range(nS):
+                        l = []
+                        for j in range(nA):
+                                l.append(0)
+                        self.memory.append(l)
+
                 # define this function
               
         
@@ -25,10 +36,25 @@ class LearningAgent:
         def selectactiontolearn(self,st,aa):
                 # define this function
                 # print("select one action to learn better")
+                if random.uniform(0, 1) < self.eps:
+                        """
+                        Explore: select a random action    """
+                        a = random.randint(0,len(aa) - 1)
+                else:
+                        """
+                        Exploit: select the action with max value (future reward)    """
 
-                a = 0
-                # define this function
-                return a
+
+                        maxI = -1
+                        maxQ = -math.inf
+                        for i in range(len(aa)):
+                                print(self.memory[st])
+                                if(self.memory[st][i] > maxQ):
+                                        maxQ = self.memory[st][i]
+                                        maxI = i
+                        a = maxI
+
+                return a    
 
         # Select one action, used when evaluating
         # st - is the current state        
@@ -38,9 +64,14 @@ class LearningAgent:
         # a - the index to the action in aa
         def selectactiontoexecute(self,st,aa):
                 # define this function
-                a = 0
+                maxI = -1
+                maxQ = -math.inf
+                for i in range(len(aa)):
+                        if(self.memory[st][i] > maxQ):
+                                maxQ = self.memory[st][i]
+                                maxI = i
                 # print("select one action to see if I learned")
-                return a
+                return maxI
 
 
         # this function is called after every action
@@ -51,5 +82,7 @@ class LearningAgent:
         def learn(self,ost,nst,a,r):
                 # define this function
                 #print("learn something from this data")
-                
+
+                self.memory[ost][a] += self.alfa * ( r + self.gama * max(self.memory[nst]) - self.memory[ost][a])
+
                 return
