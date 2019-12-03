@@ -21,7 +21,7 @@ class LearningAgent:
                 for i in range(nS):
                         l = []
                         for j in range(nA):
-                                l.append(0)
+                                l.append(-math.inf)
                         self.memory.append(l)
 
                 # define this function
@@ -36,6 +36,9 @@ class LearningAgent:
         def selectactiontolearn(self,st,aa):
                 # define this function
                 # print("select one action to learn better")
+                for i in range(len(aa)):
+                        if self.memory[st][i] == -math.inf: 
+                                self.memory[st][i] = 0
                 if random.uniform(0, 1) < self.eps:
                         """
                         Explore: select a random action    """
@@ -48,7 +51,7 @@ class LearningAgent:
                         maxI = -1
                         maxQ = -math.inf
                         for i in range(len(aa)):
-                                print(self.memory[st])
+                              
                                 if(self.memory[st][i] > maxQ):
                                         maxQ = self.memory[st][i]
                                         maxI = i
@@ -82,7 +85,7 @@ class LearningAgent:
         def learn(self,ost,nst,a,r):
                 # define this function
                 #print("learn something from this data")
-
+                
                 self.memory[ost][a] += self.alfa * ( r + self.gama * max(self.memory[nst]) - self.memory[ost][a])
 
                 return
